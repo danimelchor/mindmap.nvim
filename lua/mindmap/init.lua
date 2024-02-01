@@ -1,4 +1,4 @@
-local Mindmap = {}
+local MindMap = {}
 
 local defaultOpts = {
     log_file = vim.fn.expand("~") .. "/.config/mindmap/mindmap.log",
@@ -6,28 +6,28 @@ local defaultOpts = {
 }
 
 local function setup_autocmds()
-    Mindmap.augroup = vim.api.nvim_create_augroup("MindmapGroup", {
+    MindMap.augroup = vim.api.nvim_create_augroup("MindMapGroup", {
         clear = true,
     })
 
     vim.api.nvim_create_autocmd("BufEnter", {
-        group = Mindmap.augroup,
-        pattern = Mindmap.opts.data_path,
-        callback = Mindmap.start_watcher,
+        group = MindMap.augroup,
+        pattern = MindMap.opts.data_path,
+        callback = MindMap.start_watcher,
     })
 
     vim.api.nvim_create_autocmd("VimLeave", {
-        group = Mindmap.augroup,
-        pattern = Mindmap.opts.data_path,
+        group = MindMap.augroup,
+        pattern = MindMap.opts.data_path,
         callback = function()
-            Mindmap.stop_watcher()
-            Mindmap.stop_server()
+            MindMap.stop_watcher()
+            MindMap.stop_server()
         end,
     })
 end
 
 local function clear_autocmds()
-    vim.api.nvim_del_augroup_by_id(Mindmap.augroup)
+    vim.api.nvim_del_augroup_by_id(MindMap.augroup)
 end
 
 local function setup_cmds()
@@ -42,7 +42,7 @@ local function setup_cmds()
         "stop_watcher",
     }
 
-    vim.api.nvim_create_user_command("Mindmap", function(command)
+    vim.api.nvim_create_user_command("MindMap", function(command)
             local args = vim.split(command.args, " ")
             local cmd = table.remove(args, 1)
             if not cmd then
@@ -55,7 +55,7 @@ local function setup_cmds()
                 return
             end
 
-            local fn = Mindmap[cmd]
+            local fn = MindMap[cmd]
             if not fn then
                 print("No function for command: " .. cmd)
                 return
@@ -68,37 +68,37 @@ local function setup_cmds()
         })
 end
 
-function Mindmap.stop()
+function MindMap.stop()
     clear_autocmds()
-    Mindmap.stop_watcher()
-    Mindmap.stop_server()
+    MindMap.stop_watcher()
+    MindMap.stop_server()
 end
 
-function Mindmap.start()
+function MindMap.start()
     setup_autocmds()
-    Mindmap.start_watcher()
-    Mindmap.start_server()
+    MindMap.start_watcher()
+    MindMap.start_server()
 end
 
-function Mindmap.setup(opts)
+function MindMap.setup(opts)
     opts = opts or {}
     opts = vim.tbl_extend("force", defaultOpts, opts)
-    Mindmap.opts = opts
+    MindMap.opts = opts
 
     setup_cmds()
     setup_autocmds()
 end
 
-function Mindmap.logs()
+function MindMap.logs()
     -- Open the log file
-    local path = Mindmap.opts.log_file
+    local path = MindMap.opts.log_file
     vim.cmd("edit " .. path)
 end
 
-Mindmap.fzf_lua = require("mindmap.search").fzf_lua
-Mindmap.start_server = require("mindmap.search").start_server
-Mindmap.stop_server = require("mindmap.search").stop_server
-Mindmap.start_watcher = require("mindmap.watcher").start_watcher
-Mindmap.stop_watcher = require("mindmap.watcher").stop_watcher
+MindMap.fzf_lua = require("mindmap.search").fzf_lua
+MindMap.start_server = require("mindmap.search").start_server
+MindMap.stop_server = require("mindmap.search").stop_server
+MindMap.start_watcher = require("mindmap.watcher").start_watcher
+MindMap.stop_watcher = require("mindmap.watcher").stop_watcher
 
-return Mindmap
+return MindMap
