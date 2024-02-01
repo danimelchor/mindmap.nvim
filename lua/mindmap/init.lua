@@ -19,7 +19,10 @@ local function setup_autocmds()
     vim.api.nvim_create_autocmd("VimLeave", {
         group = Mindmap.augroup,
         pattern = Mindmap.opts.data_path,
-        callback = Mindmap.stop_watcher,
+        callback = function()
+            Mindmap.stop_watcher()
+            Mindmap.stop_server()
+        end,
     })
 end
 
@@ -28,48 +31,60 @@ local function clear_autocmds()
 end
 
 local function setup_cmds()
+    local commands = {
+        "logs",
+        "start",
+        "stop",
+        "fzf",
+        "start_server",
+        "stop_server",
+        "start_watcher",
+        "stop_watcher",
+    }
+
     vim.api.nvim_create_user_command("Mindmap", function(command)
-            local args = command.args
-            if args == "logs" then
-                Mindmap.logs()
-            elseif args == "enable" then
-                Mindmap.enable()
-            elseif args == "disable" then
-                Mindmap.disable()
-            elseif args == "fzf" then
-                Mindmap.fzf_lua()
-            else
-                print("Invalid argument: " .. args)
+            local args = vim.split(command.args, " ")
+            local cmd = table.remove(args, 1)
+            if not cmd then
+                print("No command given")
+                return
             end
+
+            if not vim.tbl_contains(commands, cmd) then
+                print("Unknown command: " .. cmd)
+                return
+            end
+
+            local fn = Mindmap[cmd]
+            if not fn then
+                print("No function for command: " .. cmd)
+                return
+            end
+
+            fn(unpack(args))
         end,
         {
             nargs = "?",
         })
 end
 
-function Mindmap.disable()
-    if Mindmap.watcher_handle == nil then
-        vim.notify("Mindmap watcher is not running", vim.log.levels.WARN)
-        return
-    end
+function Mindmap.stop()
     clear_autocmds()
     Mindmap.stop_watcher()
+    Mindmap.stop_server()
 end
 
-function Mindmap.enable()
-    if Mindmap.watcher_handle ~= nil then
-        vim.notify("Mindmap watcher is already running", vim.log.levels.WARN)
-        return
-    end
+function Mindmap.start()
     setup_autocmds()
     Mindmap.start_watcher()
+    Mindmap.start_server()
 end
 
 function Mindmap.setup(opts)
     opts = opts or {}
     opts = vim.tbl_extend("force", defaultOpts, opts)
     Mindmap.opts = opts
-    Mindmap.watcher_handle = nil
+
     setup_cmds()
     setup_autocmds()
 end
@@ -81,6 +96,8 @@ function Mindmap.logs()
 end
 
 Mindmap.fzf_lua = require("mindmap.search").fzf_lua
+Mindmap.start_server = require("mindmap.search").start_server
+Mindmap.stop_server = require("mindmap.search").stop_server
 Mindmap.start_watcher = require("mindmap.watcher").start_watcher
 Mindmap.stop_watcher = require("mindmap.watcher").stop_watcher
 

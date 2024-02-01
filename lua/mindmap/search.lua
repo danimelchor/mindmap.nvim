@@ -1,11 +1,15 @@
 local M = {}
+M.handle = nil
 
-local function start_server()
+function M.start_server()
+    if M.handle ~= nil then
+        return
+    end
+
     local uv = vim.loop
-
     local stderr = uv.new_pipe(false)
 
-    local handle = uv.spawn("mindmap", {
+    M.handle = uv.spawn("mindmap", {
         args = { "server" },
         stdio = { nil, nil, stderr },
     }, function(code, signal)
@@ -15,6 +19,7 @@ local function start_server()
             print("Mindmap server exited")
         end
     end)
+    vim.notify("Started mindmap server", vim.log.levels.INFO)
 
     stderr:read_start(function(err, data)
         assert(not err, err)
@@ -22,8 +27,6 @@ local function start_server()
             error("[Mindmap server] " .. data)
         end
     end)
-
-    return handle
 end
 
 function M.stop_server()
@@ -37,21 +40,9 @@ function M.stop_server()
     vim.notify("Stopped mindmap server", vim.log.levels.INFO)
 end
 
-function M.check_ft()
-    local ft = vim.bo.filetype
-    if ft ~= "fzf" then
-        M.stop_server()
-        M.timer:stop()
-        M.timer:close()
-    end
-
-    M.timer:start(1000, 0, vim.schedule_wrap(function()
-        M.check_ft()
-    end))
-end
-
 function M.fzf_lua()
-    M.handle = start_server()
+    M.start_server()
+
     require('fzf-lua').fzf_live("curl -G -s --data-urlencode 'q=<query>' 127.0.0.1:5001", {
         fn_transform = function(x)
             return require('fzf-lua').make_entry.file(x, {
@@ -67,10 +58,6 @@ function M.fzf_lua()
         },
         silent_fail = false
     })
-
-    -- So sketchy but it works
-    M.timer = vim.loop.new_timer()
-    M.check_ft()
 end
 
 return M
