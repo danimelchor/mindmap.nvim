@@ -55,6 +55,7 @@ function M.fzf_lua()
         actions = {
             ["default"] = require('fzf-lua').actions.file_edit,
             ["ctrl-s"] = require('fzf-lua').actions.file_vsplit,
+            ["ctrl-o"] = M.new_note,
         },
     })
 end

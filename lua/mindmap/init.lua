@@ -10,6 +10,13 @@ local function setup_autocmds()
         clear = true,
     })
 
+    vim.keymap.set(
+        "n",
+        "<LEADER>z",
+        MindMap.todays_note,
+        { noremap = true, silent = true }
+    )
+
     vim.api.nvim_create_autocmd("BufEnter", {
         group = MindMap.augroup,
         pattern = MindMap.opts.data_path,
@@ -40,6 +47,7 @@ local function setup_cmds()
         "stop_server",
         "start_watcher",
         "stop_watcher",
+        "todays_note",
     }
 
     vim.api.nvim_create_user_command("MindMap", function(command)
@@ -93,6 +101,21 @@ function MindMap.logs()
     -- Open the log file
     local path = MindMap.opts.log_file
     vim.cmd("edit " .. path)
+end
+
+function MindMap.todays_note()
+    local notes_dir = vim.fn.expand("~") .. "/mindmap"
+    local today = os.date("%Y%m%d")
+    local today_nice = os.date("%Y-%m-%d")
+    local note_path = notes_dir .. "/" .. today .. ".md"
+    local header = { "<--- " .. today_nice .. " --->", "", "" }
+
+    if vim.fn.filereadable(note_path) == 0 then
+        vim.fn.writefile(header, note_path)
+    end
+
+    -- Edit line 3
+    vim.cmd("edit +3 " .. note_path)
 end
 
 MindMap.fzf_lua = require("mindmap.search").fzf_lua
