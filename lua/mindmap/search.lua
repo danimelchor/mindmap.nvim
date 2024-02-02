@@ -56,7 +56,6 @@ function M.fzf_lua()
             ["default"] = require('fzf-lua').actions.file_edit,
             ["ctrl-s"] = require('fzf-lua').actions.file_vsplit,
         },
-        silent_fail = false
     })
 end
 
