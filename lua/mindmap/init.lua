@@ -12,8 +12,14 @@ local function setup_autocmds()
 
     vim.keymap.set(
         "n",
-        "<LEADER>z",
+        "<LEADER>m",
         MindMap.todays_note,
+        { noremap = true, silent = true }
+    )
+    vim.keymap.set(
+        "n",
+        "<LEADER>M",
+        MindMap.new_note,
         { noremap = true, silent = true }
     )
 
@@ -38,28 +44,14 @@ local function clear_autocmds()
 end
 
 local function setup_cmds()
-    local commands = {
-        "logs",
-        "start",
-        "stop",
-        "fzf",
-        "start_server",
-        "stop_server",
-        "start_watcher",
-        "stop_watcher",
-        "todays_note",
-    }
-
     vim.api.nvim_create_user_command("MindMap", function(command)
             local args = vim.split(command.args, " ")
             local cmd = table.remove(args, 1)
-            if not cmd then
-                print("No command given")
-                return
-            end
-
-            if not vim.tbl_contains(commands, cmd) then
-                print("Unknown command: " .. cmd)
+            if cmd == nil or cmd == "" then
+                print("No command given. Available commands:")
+                for c, _ in pairs(MindMap) do
+                    print(" - " .. c)
+                end
                 return
             end
 
@@ -108,14 +100,27 @@ function MindMap.todays_note()
     local today = os.date("%Y%m%d")
     local today_nice = os.date("%Y-%m-%d")
     local note_path = notes_dir .. "/" .. today .. ".md"
-    local header = { "<--- " .. today_nice .. " --->", "", "" }
+    local header = { "<--- " .. today_nice .. " --->", "", "# Notes for " .. today_nice, "" }
 
-    if vim.fn.filereadable(note_path) == 0 then
-        vim.fn.writefile(header, note_path)
+    local exists = vim.fn.filereadable(note_path) == 1
+    vim.cmd("cd " .. notes_dir)
+    if not exists then
+        vim.cmd("enew")
+        vim.fn.append(0, header)
+    else
+        vim.cmd("edit " .. note_path)
     end
+    vim.bo.filetype = "markdown"
+end
 
-    -- Edit line 3
-    vim.cmd("edit +3 " .. note_path)
+function MindMap.new_note()
+    local notes_dir = vim.fn.expand("~") .. "/mindmap"
+    local today_nice = os.date("%Y-%m-%d")
+    local header = { "<--- " .. today_nice .. " --->", "" }
+    vim.cmd("cd " .. notes_dir)
+    vim.cmd("enew")
+    vim.fn.append(0, header)
+    vim.bo.filetype = "markdown"
 end
 
 MindMap.fzf_lua = require("mindmap.search").fzf_lua
