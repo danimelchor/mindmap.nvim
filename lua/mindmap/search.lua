@@ -23,10 +23,7 @@ function M.start_server()
 
     stderr:read_start(function(err, data)
         M.stop_server()
-        assert(not err, err)
-        if data then
-            error("[Mindmap server] " .. data)
-        end
+        error("[Mindmap server] " .. data .. " (" .. vim.inspect(err) .. ")")
     end)
 end
 
@@ -38,7 +35,9 @@ function M.stop_server()
     local uv = vim.loop
     uv.process_kill(M.handle, "sigterm")
     M.watcher_handle = nil
-    vim.notify("Stopped mindmap server", vim.log.levels.INFO)
+    vim.schedule(function()
+        vim.notify("Stopped mindmap server", vim.log.levels.INFO)
+    end)
 end
 
 function M.fzf_lua()
