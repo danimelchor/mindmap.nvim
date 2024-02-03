@@ -13,24 +13,16 @@ function M.start_watcher()
     local cwd = home .. "/projects/mindmap/mindmap"
 
     local stderr = uv.new_pipe(false)
-    local stdout = uv.new_pipe(false)
 
     M.watcher_handle = uv.spawn("mindmap", {
         args = { "watch" },
-        stdio = { nil, stdout, stderr },
+        stdio = { nil, stderr },
         cwd = cwd,
     }, function(code, signal)
         if code ~= 0 then
             print("Mindmap watcher exited with code " .. code .. " and signal " .. signal)
         else
             print("Mindmap watcher exited")
-        end
-    end)
-
-    stdout:read_start(function(err, data)
-        assert(not err, err)
-        if data then
-            print("Mindmap watcher out: " .. data)
         end
     end)
 

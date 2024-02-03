@@ -2,7 +2,7 @@ local MindMap = {}
 
 local defaultOpts = {
     log_file = vim.fn.expand("~") .. "/.config/mindmap/mindmap.log",
-    data_path = vim.fn.expand("~") .. "/mindmap/*.md",
+    data_path = vim.fn.expand("~") .. "/notes/*.md",
 }
 
 local function setup_autocmds()
@@ -96,7 +96,7 @@ function MindMap.logs()
 end
 
 function MindMap.todays_note()
-    local notes_dir = vim.fn.expand("~") .. "/mindmap"
+    local notes_dir = vim.fn.expand("~") .. "/notes"
     local today = os.date("%Y%m%d")
     local today_nice = os.date("%Y-%m-%d")
     local note_path = notes_dir .. "/" .. today .. ".md"
@@ -114,7 +114,7 @@ function MindMap.todays_note()
 end
 
 function MindMap.new_note()
-    local notes_dir = vim.fn.expand("~") .. "/mindmap"
+    local notes_dir = vim.fn.expand("~") .. "/notes"
     local today_nice = os.date("%Y-%m-%d")
     local header = { "<--- " .. today_nice .. " --->", "" }
     vim.cmd("cd " .. notes_dir)
