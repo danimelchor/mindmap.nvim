@@ -29,7 +29,7 @@ function M.start_watcher()
     stderr:read_start(function(err, data)
         assert(not err, err)
         if data then
-            vim.notify("[Mindmap watcher] " .. data, vim.log.levels.ERROR)
+            print("[Mindmap watcher] " .. data)
         end
     end)
 end

@@ -22,6 +22,7 @@ function M.start_server()
     vim.notify("Started mindmap server", vim.log.levels.INFO)
 
     stderr:read_start(function(err, data)
+        M.stop_server()
         assert(not err, err)
         if data then
             error("[Mindmap server] " .. data)
