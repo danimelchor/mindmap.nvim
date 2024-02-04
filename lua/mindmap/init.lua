@@ -102,15 +102,12 @@ function MindMap.todays_note()
     local note_path = notes_dir .. "/" .. today .. ".md"
     local header = { "<--- " .. today_nice .. " --->", "", "# Notes for " .. today_nice, "" }
 
-    local exists = vim.fn.filereadable(note_path) == 1
     vim.cmd("cd " .. notes_dir)
+    local exists = vim.fn.filereadable(note_path) == 1
     if not exists then
-        vim.cmd("enew")
-        vim.fn.append(0, header)
-    else
-        vim.cmd("edit " .. note_path)
+        vim.fn.writefile(header, note_path)
     end
-    vim.bo.filetype = "markdown"
+    vim.cmd("edit " .. note_path)
 end
 
 function MindMap.new_note()
