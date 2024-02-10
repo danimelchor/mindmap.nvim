@@ -148,7 +148,7 @@ function MindMap.new_note()
 end
 
 MindMap.fzf_lua = function()
-    require("mindmap.search").fzf_lua(MindMap.server.host)
+    require("mindmap.search").fzf_lua(MindMap.opts)
 end
 MindMap.start_server = require("mindmap.search").start_server
 MindMap.stop_server = require("mindmap.search").stop_server
