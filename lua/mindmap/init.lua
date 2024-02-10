@@ -52,7 +52,7 @@ local function setup_autocmds()
     if MindMap.opts.watcher.auto_start then
         vim.api.nvim_create_autocmd("BufEnter", {
             group = MindMap.augroup,
-            pattern = MindMap.MindMap.opts.data_path,
+            pattern = MindMap.opts.data_path,
             callback = MindMap.start_watcher,
         })
     end
