@@ -1,9 +1,12 @@
 # mindmap.nvim
 
 `mindmap.nvim` is a wrapper for [MindMap](https://github.com/danimelchor/mindmap) that allows you to search your notes using semantic search
-directly in neovim using your favorite fuzzy finder like `fzf`, `fzf-lua` or `telescope`.
+directly in neovim using `fzf-lua`.
 
 ## Installation
+
+> [!IMPORTANT]
+> You need to call `setup` to initialize the plugin.
 
 Using [vim-plug](https://github.com/junegunn/vim-plug)
 
@@ -42,5 +45,3 @@ directory. It will also automatically start the server the first time you run a 
 | `:MindMap enable_server` | Enable the server |
 | `:MindMap disable_server` | Disable the server |
 | `:MindMap fzf_lua` | Search using fzf-lua |
-| `:MindMap fzf` | Search using fzf |
-| `:MindMap telescope` | Search using telescope |
