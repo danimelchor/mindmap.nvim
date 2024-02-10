@@ -54,6 +54,7 @@ function M.fzf_lua(opts)
         end,
         previewer = "builtin",
         prompt = "Mindmap> ",
+        actions = require('fzf-lua').defaults.actions.files
     })
 end
 
