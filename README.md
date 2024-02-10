@@ -3,6 +3,10 @@
 `mindmap.nvim` is a wrapper for [MindMap](https://github.com/danimelchor/mindmap) that allows you to search your notes using semantic search
 directly in neovim using `fzf-lua`.
 
+
+https://github.com/danimelchor/mindmap.nvim/assets/24496843/0f72f0b3-af8d-4419-b77d-29cd999661d9
+
+
 ## Installation
 
 > [!IMPORTANT]
