@@ -40,10 +40,11 @@ function M.stop_server()
     end)
 end
 
-function M.fzf_lua(host)
+--@param opts Opts
+function M.fzf_lua(opts)
     M.start_server()
 
-    local cmd = "curl -G -s --data-urlencode 'q=<query>' " .. host
+    local cmd = "curl -G -s --data-urlencode 'q=<query>' " .. opts.server.host
     require('fzf-lua').fzf_live(cmd, {
         fn_transform = function(x)
             return require('fzf-lua').make_entry.file(x, {
@@ -53,11 +54,6 @@ function M.fzf_lua(host)
         end,
         previewer = "builtin",
         prompt = "Mindmap> ",
-        actions = {
-            ["default"] = require('fzf-lua').actions.file_edit,
-            ["ctrl-s"] = require('fzf-lua').actions.file_vsplit,
-            ["ctrl-o"] = M.new_note,
-        },
     })
 end
 

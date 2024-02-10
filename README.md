@@ -45,3 +45,25 @@ directory. It will also automatically start the server the first time you run a 
 | `:MindMap enable_server` | Enable the server |
 | `:MindMap disable_server` | Disable the server |
 | `:MindMap fzf_lua` | Search using fzf-lua |
+
+
+## Configuration
+
+You can configure `mindmap.nvim` by calling `setup` with a table of options. The following are the default options.
+
+```lua
+require("mindmap").setup({
+    data_path = vim.fn.expand("~") .. "/notes/*.md",
+    keybinds = {
+        todays_note = "<LEADER>m",
+        new_note = "<LEADER>M",
+    },
+    watcher = {
+        auto_start = true,
+        auto_stop = true,
+    },
+    server = {
+        host = "127.0.0.1:5001",
+    },
+})
+```

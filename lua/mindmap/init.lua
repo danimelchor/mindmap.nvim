@@ -1,6 +1,20 @@
 local MindMap = {}
 
-local defaultOpts = {
+--@class WatcherOpts
+--@field auto_start boolean
+--@field auto_stop boolean
+
+--@class ServerOpts
+--@field host string
+
+--@param Opts table
+--@field data_path string
+--@field keybinds table
+--@field watcher WatcherOpts
+--@field server ServerOpts
+
+--@type Opts
+local default_opts = {
     data_path = vim.fn.expand("~") .. "/notes/*.md",
     keybinds = {
         todays_note = "<LEADER>m",
@@ -98,9 +112,10 @@ function MindMap.start()
     MindMap.start_server()
 end
 
+--@param opts Opts
 function MindMap.setup(opts)
     opts = opts or {}
-    opts = vim.tbl_extend("force", defaultOpts, opts)
+    opts = vim.tbl_extend("force", default_opts, opts)
     MindMap.opts = opts
 
     setup_cmds()
