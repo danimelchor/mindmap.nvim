@@ -8,16 +8,11 @@ function M.start_watcher()
 
     vim.notify("Starting mindmap watcher", vim.log.levels.INFO)
     local uv = vim.loop
-
-    local home = vim.fn.expand("~")
-    local cwd = home .. "/projects/mindmap/mindmap"
-
     local stderr = uv.new_pipe(false)
 
     M.watcher_handle = uv.spawn("mindmap", {
         args = { "watch" },
         stdio = { nil, stderr },
-        cwd = cwd,
     }, function(code, signal)
         if code ~= 0 then
             print("Mindmap watcher exited with code " .. code .. " and signal " .. signal)

@@ -40,10 +40,11 @@ function M.stop_server()
     end)
 end
 
-function M.fzf_lua()
+function M.fzf_lua(host)
     M.start_server()
 
-    require('fzf-lua').fzf_live("curl -G -s --data-urlencode 'q=<query>' 127.0.0.1:5001", {
+    local cmd = "curl -G -s --data-urlencode 'q=<query>' " .. host
+    require('fzf-lua').fzf_live(cmd, {
         fn_transform = function(x)
             return require('fzf-lua').make_entry.file(x, {
                 file_icons = true,
